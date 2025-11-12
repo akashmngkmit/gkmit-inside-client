@@ -1,16 +1,36 @@
-# React + Vite
+# **Project Overview & Vision**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## **Overview**
 
-Currently, two official plugins are available:
+**GKMIT INSIDE** is much more than just an internal blog — it’s a specialized platform for long-form content, deep technical discussions, critical insights, and official announcements.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Our core vision is to serve as the **“Twitter for GKMIT”**, but with a crucial difference:  
+the focus is on **structured, high-quality knowledge** rather than casual social interaction.
 
-## React Compiler
+The platform is designed to capture and amplify the collective expertise within our organization.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## **Target Audience**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The platform serves two distinct user groups:
+
+- **Employees** – The contributors who create, share, and consume technical content that drives GKMIT’s innovation.
+- **Administrators** – The moderators responsible for managing platform operations, content approval, and maintaining quality standards.
+
+---
+
+## **Frontend Tech Stack — The Engine of Experience**
+
+The GKMIT INSIDE frontend is powered by a **modern, stable, and high-performance tech stack**, ensuring speed, scalability, and a smooth user experience.
+
+| **Category**         | **Technology** | **Stable Version** | **Purpose**                                                 |
+| -------------------- | -------------- | ------------------ | ----------------------------------------------------------- |
+| Frontend Framework   | ReactJS        | v19.2.0            | Core library for fast, declarative UI rendering             |
+| Build Tool           | Vite           | v7.2               | Next-gen frontend tooling for optimized builds              |
+| State Management     | Context API    | N/A                | Handles global state management, included natively in React |
+| Styling Framework    | Tailwind CSS   | v4.1.13            | Utility-first CSS styling framework for consistent design   |
+| UI Component Library | Shadcn/UI      | v0.9.5             | Provides accessible & customizable UI components            |
+| Deployment Platform  | Vercel         | N/A                | Global, scalable, and instant frontend deployment           |
+
+---
