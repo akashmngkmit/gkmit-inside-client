@@ -5,8 +5,6 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-
-
 });
 
 api.interceptors.request.use(
@@ -17,7 +15,6 @@ api.interceptors.request.use(
       if (!config.headers) config.headers = {};
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
     return config;
   },(error) => {
     return Promise.reject(error);
