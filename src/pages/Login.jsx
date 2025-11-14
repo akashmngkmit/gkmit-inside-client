@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
- const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     console.log('Login attempt with:', { email, password });
   };
@@ -24,8 +24,8 @@ export const Login = () => {
         </div>
         <div className="space-y-4 sm:space-y-6">
           <div>
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
               Email Address
@@ -37,14 +37,14 @@ export const Login = () => {
               autoComplete="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="you@company.com"
             />
           </div>
           <div>
-            <label 
-              htmlFor="password" 
+            <label
+              htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
               Password
@@ -56,7 +56,7 @@ export const Login = () => {
               autoComplete="current-password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="••••••••"
             />
@@ -73,7 +73,7 @@ export const Login = () => {
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link 
+            <Link
               to="/register"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
@@ -84,4 +84,4 @@ export const Login = () => {
       </div>
     </div>
   );
-}
+};
