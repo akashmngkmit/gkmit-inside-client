@@ -14,10 +14,16 @@ export const Footer = () => {
           <a href="/" className="text-sm hover:text-white transition-colors">
             Home
           </a>
-          <a href="/login" className="text-sm hover:text-white transition-colors">
+          <a
+            href="/login"
+            className="text-sm hover:text-white transition-colors"
+          >
             Login
           </a>
-          <a href="/register" className="text-sm hover:text-white transition-colors">
+          <a
+            href="/register"
+            className="text-sm hover:text-white transition-colors"
+          >
             Register
           </a>
         </div>
