@@ -21,8 +21,6 @@ const FeatureCard = ({ icon, title, description }) => (
         </div>
       </div>
     </CardHeader>
-    <CardContent>
-    </CardContent>
   </Card>
 );
 
