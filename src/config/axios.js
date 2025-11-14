@@ -8,7 +8,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem('authToken');
 
     if (token) {
@@ -16,9 +16,8 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-  },(error) => {
+  },
+  error => {
     return Promise.reject(error);
   }
 );
-
-
