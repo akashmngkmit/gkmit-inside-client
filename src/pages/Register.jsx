@@ -22,13 +22,6 @@ export const Register = () => {
       setError('Password must be at least 8 characters long.');
       return;
     }
-    console.log('Registration Submitted:', {
-      name,
-      email,
-      password,
-      department,
-      roleId: role,
-    });
   };
 
   return (

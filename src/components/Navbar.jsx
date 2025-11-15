@@ -8,7 +8,7 @@ export const Navbar = () => {
       <img
         src={logo}
         alt="GKMIT Inside Logo"
-        className="w-32 h-w-32 object-contain grayscale"
+        className="w-32 h-32 object-contain grayscale"
       />
       <div className="bg-black h-12 p-4 w-48 text-white flex gap-8 items-center justify-center rounded-full">
         <Link

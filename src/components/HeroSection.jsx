@@ -3,12 +3,12 @@ import { ArrowBigRight } from 'lucide-react';
 
 export function HeroSection() {
   const [vantaEffect, setVantaEffect] = useState(null);
-  const vantaRef = useRef(null);
+  const vantaBackgroundRef = useRef(null);
   useEffect(() => {
     if (window.VANTA && window.THREE) {
       if (!vantaEffect) {
         const effect = window.VANTA.GLOBE({
-          el: vantaRef.current,
+          el: vantaBackgroundRef.current,
           THREE: window.THREE,
           mouseControls: true,
           touchControls: true,
@@ -33,7 +33,7 @@ export function HeroSection() {
 
   return (
     <div className="relative min-h-screen w-full">
-      <div ref={vantaRef} className="absolute top-0 left-0 w-full h-full z-0" />
+      <div ref={vantaBackgroundRef} className="absolute top-0 left-0 w-full h-full z-0" />
       <div className="relative z-10 flex flex-col items-center md:items-start h-auto justify-center min-h-screen p-4">
         <div className="bg-black/50 backdrop-blur-sm w-full max-w-3xl h-[550px] md:ml-60 p-6 md:p-12 flex flex-col items-center justify-center gap-6 md:gap-10 border-2 border-white border-dotted rounded-2xl text-center">
           <h1 className="text-6xl md:text-7xl font-bold text-white md:tracking-wider leading-tight">
