@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 export const Register = () => {
-  // State for all form fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [department, setDepartment] = useState('');
+  // const [role, setRole] = useState('Employee');
   const [error, setError] = useState(null);
 
   const handleSubmit = e => {
@@ -17,7 +28,6 @@ export const Register = () => {
       setError('Passwords do not match.');
       return;
     }
-
     if (password.length < 8) {
       setError('Password must be at least 8 characters long.');
       return;
@@ -38,101 +48,67 @@ export const Register = () => {
             Fill in the details below to register.
           </p>
         </div>
-
         <div className="space-y-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Full Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
               id="name"
               type="text"
               required
               value={name}
               onChange={e => setName(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="John Doe"
             />
           </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email Address
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Input
               id="email"
               type="email"
               autoComplete="email"
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="you@company.com"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="department"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Department
-              </label>
-              <select
-                id="department"
-                required
-                value={department}
-                onChange={e => setDepartment(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
-              >
-                <option value="" disabled>
-                  Select department
-                </option>
-                <option value="hr">HR</option>
-                <option value="recruitment">Recruitment</option>
-                <option value="developer">Developer</option>
-              </select>
+            <div className="space-y-2">
+              <Label htmlFor="department">Department</Label>
+              <Select required value={department} onValueChange={setDepartment}>
+                <SelectTrigger id="department">
+                  <SelectValue placeholder="Select department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hr">HR</SelectItem>
+                  <SelectItem value="recruitment">Recruitment</SelectItem>
+                  <SelectItem value="developer">Developer</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div></div>
           </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
               id="password"
               type="password"
               autoComplete="new-password"
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="Minimum 8 characters"
             />
           </div>
-          <div>
-            <label
-              htmlFor="confirm-password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Confirm Password
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="confirm-password">Confirm Password</Label>
+            <Input
               id="confirm-password"
               type="password"
               autoComplete="new-password"
               required
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base"
               placeholder="••••••••"
             />
           </div>
@@ -143,14 +119,10 @@ export const Register = () => {
             Note: All new accounts are subject to administrator approval. You
             will be able to log in once your account has been approved.
           </div>
-
           <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-2.5 sm:py-3 px-4 border border-transparent rounded-md shadow-sm text-sm sm:text-base font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-200"
-            >
+            <Button type="submit" className="w-full">
               Register
-            </button>
+            </Button>
           </div>
         </div>
 
