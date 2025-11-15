@@ -1,17 +1,31 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/store/AuthContext';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
 
-  const handleSubmit = e => {
+  const {login} = useAuth()
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // for mock login
+    await login(formData.email, formData.password);
   };
 
   return (
@@ -38,8 +52,8 @@ export const Login = () => {
               type="email"
               autoComplete="email"
               required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange} 
               placeholder="you@company.com"
             />
           </div>
@@ -47,12 +61,12 @@ export const Login = () => {
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
-              name="password"
+              name="password" 
               type="password"
               autoComplete="current-password"
               required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               placeholder="••••••••"
             />
           </div>

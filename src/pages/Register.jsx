@@ -13,22 +13,48 @@ import {
 } from "@/components/ui/select";
 
 export const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [department, setDepartment] = useState('');
-  // const [role, setRole] = useState('Employee');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    department: '',
+    role: 'Employee'
+  });
+  
   const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleDepartmentChange = (value) => {
+    setFormData(prevData => ({
+      ...prevData,
+      department: value
+    }));
+  };
+
+  const handleRoleChange = (value) => {
+    setFormData(prevData => ({
+      ...prevData,
+      role: value
+    }));
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
     setError(null);
-    if (password !== confirmPassword) {
+    
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-    if (password.length < 8) {
+    if (formData.password.length < 8) {
       setError('Password must be at least 8 characters long.');
       return;
     }
@@ -48,15 +74,17 @@ export const Register = () => {
             Fill in the details below to register.
           </p>
         </div>
+
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
+              name="name"
               type="text"
               required
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={formData.name} 
+              onChange={handleChange} 
               placeholder="John Doe"
             />
           </div>
@@ -64,18 +92,23 @@ export const Register = () => {
             <Label htmlFor="email">Email Address</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               autoComplete="email"
               required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={formData.email} 
+              onChange={handleChange}
               placeholder="you@company.com"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="department">Department</Label>
-              <Select required value={department} onValueChange={setDepartment}>
+              <Select 
+                required 
+                value={formData.department}
+                onValueChange={handleDepartmentChange}
+              >
                 <SelectTrigger id="department">
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
@@ -87,16 +120,33 @@ export const Register = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select 
+                required 
+                value={formData.role}
+                onValueChange={handleRoleChange}
+              >
+                <SelectTrigger id="role">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Employee">Employee</SelectItem>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               autoComplete="new-password"
               required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              value={formData.password} 
+              onChange={handleChange}
               placeholder="Minimum 8 characters"
             />
           </div>
@@ -104,11 +154,12 @@ export const Register = () => {
             <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input
               id="confirm-password"
+              name="confirmPassword"
               type="password"
               autoComplete="new-password"
               required
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
+              value={formData.confirmPassword} 
+              onChange={handleChange}
               placeholder="••••••••"
             />
           </div>
