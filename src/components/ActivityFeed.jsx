@@ -6,31 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-// mock data
-const activities = [
-  {
-    id: 1,
-    user: 'Akash M Nandan',
-    action: 'posted about "Web APIs and folder structures"',
-    time: '3h ago',
-    fallback: 'AM',
-  },
-  {
-    id: 2,
-    user: 'Yuvraj GKMIT',
-    action: 'reacted to your post "Vanta.js Integration"',
-    time: '5h ago',
-    fallback: 'H',
-  },
-  {
-    id: 3,
-    user: 'Chandrapal GKMIT',
-    action: 'commented on "ShadCN Refactor"',
-    time: '1d ago',
-    fallback: 'CG',
-  },
-];
+import { mockActivities } from '@/mocks/ActivityData';
 
 export const ActivityFeed = () => {
   return (
@@ -40,9 +16,9 @@ export const ActivityFeed = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {activities.map((activity) => (
+          {mockActivities.map((activity) => (
             <div key={activity.id} className="flex items-start gap-3">
-              <Avatar className="h-9 w-9">
+              <Avatar size="9">
                 <AvatarFallback>{activity.fallback}</AvatarFallback>
               </Avatar>
               <div className="text-sm">
