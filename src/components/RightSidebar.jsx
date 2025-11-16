@@ -1,12 +1,14 @@
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
+import { Searchbar } from './Searchbar.jsx';
+import { ActivityFeed } from './ActivityFeed.jsx';
 
 export const RightSidebar = () => {
   return (
-    <Card className="w-full h-full sticky top-6">
-      <CardContent className="p-4">
-        <p className="text-sm text-gray-500">Right Sidebar Placeholder</p>
-      </CardContent>
-    </Card>
+    <div className="w-full h-full sticky top-6">
+      <div className="flex flex-col gap-6">
+        <Searchbar />
+        <ActivityFeed />
+      </div>
+    </div>
   );
 };
