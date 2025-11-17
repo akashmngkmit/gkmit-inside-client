@@ -1,55 +1,69 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+// Fix: We only need loginUser now.
+import { loginUser } from '@/api/AuthApi';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();  
 
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
+      // 1. Check for BOTH user and token in localStorage
+      const storedUser = localStorage.getItem('gkmit-user');
+      const storedToken = localStorage.getItem('gkmit-token');
+
+      if (storedUser && storedToken) {
+        // 2. If they exist, set them into our React state
         setUser(JSON.parse(storedUser));
+        setAccessToken(storedToken);
       }
     } catch (error) {
-      console.error("Failed to parse stored user", error);
+      // If parsing fails, clear storage
+      console.error("Failed to parse stored auth data", error);
+      localStorage.removeItem('gkmit-user');
+      localStorage.removeItem('gkmit-token');
     } finally {
+      // 3. We are done checking, stop loading
       setIsLoading(false);
     }
-  }, []);
+  }, []); // Runs once on app load
 
+  // --- FIX 1 & 2: LOGIN & ADMIN REDIRECT ---
   const login = async (email, password) => {
-    console.log("Attempting login with", email, password);
-    const mockUser = {
-      id: '123',
-      email: email,
-      name: 'Mock User',
-      role: email.includes('admin') ? 'Admin' : 'Employee',
-      isApproved: true,
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
-    
-    // redirection
-    if (mockUser.role === 'Admin') {
-      navigate('/admin/dashboard');
-    } else {
+    const response = await loginUser({ email, password });
+    const { user, accessToken } = response.data;
+    setUser(user);
+    setAccessToken(accessToken);
+
+    localStorage.setItem('gkmit-user', JSON.stringify(user));
+    localStorage.setItem('gkmit-token', accessToken);
+
+    toast.success(response.message || 'Login successful!');
+    if (user.role === 'employee') {
       navigate('/feed');
+    } else {
+      navigate('/admin/dashboard');
     }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    setAccessToken(null);
+    localStorage.removeItem('gkmit-user');
+    localStorage.removeItem('gkmit-token');
     navigate('/login');
+    toast.success('You have been logged out.');
   };
 
   const value = {
     user,
+    accessToken,
     isLoading,
     login,
     logout,
