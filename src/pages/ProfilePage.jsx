@@ -1,62 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { useParams } from 'react-router-dom';
-
-// Import our reusable components
-// FIX: Changed alias paths '@/' to relative paths '../'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostCard } from '../components/PostCard.jsx';
 import { ProfileHeader } from '../components/ProfileHeader.jsx'; 
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
 import { getPostsByUserId } from '@/api/PostApi.jsx';
 
-// We no longer import mock data
-
-/**
- * The main profile page, which displays a user's details and their posts.
- */
 export const ProfilePage = () => {
-  // FIX: Get userId from the URL, not username
   const { userId } = useParams(); 
   
-  // State for the profile data and posts
-  const [profile, setProfile] = useState(null); // We'll infer this from the first post
-  const [posts, setPosts] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [allPosts, setAllPosts] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
 
-  // --- NEW: Real Data Fetch ---
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
     setIsLoading(true);
     setError(null);
     setProfile(null);
-    setPosts([]);
+    setAllPosts([]); 
 
     const fetchProfileData = async () => {
       try {
-        // 1. Call the API using the userId from the URL
         const response = await getPostsByUserId(userId, axiosPrivate);
         if (!isMounted) return;
 
         const userPosts = response.data.data;
-        console.log(userPosts)
-        setPosts(userPosts);
+        setAllPosts(userPosts); 
 
-        // 2. Infer Profile Header Data
-        // We assume the user's details are on the author object
-        // of the first post. This is a workaround for not having
-        // a dedicated /api/users/:userId endpoint.
         if (userPosts.length > 0) {
-          // ASSUMPTION: Your API returns an 'author' object here,
-          // just like the /api/posts (main feed) endpoint.
           setProfile(userPosts[0].author); 
         } else {
-          // If the user has no posts, we can't show a header.
-          // This is a limitation we'd fix by adding a
-          // GET /api/users/:userId endpoint.
-          setProfile(null); // Or some default
+          setProfile(null); 
         }
 
       } catch (err) {
@@ -76,7 +55,7 @@ export const ProfilePage = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [userId, axiosPrivate]); // Re-fetch if the userId in the URL changes
+  }, [userId, axiosPrivate]); 
 
   if (isLoading) {
     return (
@@ -96,35 +75,75 @@ export const ProfilePage = () => {
     );
   }
 
+  const approvedPosts = allPosts.filter(post => post.postStatus === 'approved');
+  const pendingPosts = allPosts.filter(post => post.postStatus === 'pending');
+  const rejectedPosts = allPosts.filter(post => post.postStatus === 'rejected');
+
   return (
     <div className="flex flex-col gap-6">
       
-      {/* 1. The Profile Header Card */}
-      {/* We only show the header if we successfully inferred the profile */}
       {profile ? (
-        <>
-          <ProfileHeader user={profile} />
-          <h2 className="text-2xl font-bold">Posts by {profile.name}</h2>
-        </>
+        <ProfileHeader user={profile} />
       ) : (
         <h2 className="text-2xl font-bold">User Profile</h2>
       )}
 
-      {/* 2. The list of posts */}
-      {posts.length > 0 ? (
-        <div className="flex flex-col gap-6">
-          {posts.map((post) => (
-            <PostCard key={post._id} post={post} />
-          ))}
-        </div>
-      ) : (
-        <Card>
-          <CardContent className="p-6 text-center text-gray-500">
-            <p>This user hasn't posted anything yet.</p>
-          </CardContent>
-        </Card>
-      )}
-
+      <Tabs defaultValue="approved" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="approved">Approved ({approvedPosts.length})</TabsTrigger>
+          <TabsTrigger value="pending">Pending ({pendingPosts.length})</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected ({rejectedPosts.length})</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="approved">
+          {approvedPosts.length > 0 ? (
+            <div className="flex flex-col gap-6 mt-4">
+              {approvedPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center text-gray-500">
+                <p>This user has no approved posts yet.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="pending">
+          {pendingPosts.length > 0 ? (
+            <div className="flex flex-col gap-6 mt-4">
+              {pendingPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center text-gray-500">
+                <p>This user has no pending posts.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="rejected">
+          {rejectedPosts.length > 0 ? (
+            <div className="flex flex-col gap-6 mt-4">
+              {rejectedPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center text-gray-500">
+                <p>This user has no rejected posts.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
+      
     </div>
   );
 };
