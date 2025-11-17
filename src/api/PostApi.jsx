@@ -18,3 +18,17 @@ export const createPost = (formData, axiosPrivate) => {
 export const getFeed = (axiosPrivate) => {
   return axiosPrivate.get('/posts');
 };
+
+export const toggleLike = (postId, axiosPrivate) => {
+  return axiosPrivate.post(`/posts/${postId}/react`);
+};
+
+
+/**
+ * Toggles a "bookmark" on a post.
+ * @param {string} postId The ID of the post to bookmark/unbookmark
+ * @param {object} axiosPrivate - The private, intercepted axios instance
+ */
+export const toggleBookmark = (postId, axiosPrivate) => {
+  return axiosPrivate.post(`/posts/${postId}/bookmark`);
+};
