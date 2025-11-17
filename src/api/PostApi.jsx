@@ -1,4 +1,3 @@
-
 /**
  * Creates a new post.
  * @param {FormData} formData - The post data (title, desc, image, tags)
@@ -10,4 +9,12 @@ export const createPost = (formData, axiosPrivate) => {
       'Content-Type': 'multipart/form-data',
     },
   });
+};
+
+/**
+ * Gets the main feed of all approved posts.
+ * @param {object} axiosPrivate - The private, intercepted axios instance
+ */
+export const getFeed = (axiosPrivate) => {
+  return axiosPrivate.get('/posts');
 };
