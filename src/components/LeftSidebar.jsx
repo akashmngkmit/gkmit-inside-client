@@ -24,11 +24,10 @@ const SidebarNavLink = ({ to, icon, children }) => {
 
 export const LeftSidebar = () => {
   const { user, logout } = useAuth();
-  const username = user?.name || 'user';
 
   const navLinks = [
     { name: 'Feed', to: '/feed', icon: <Home className="w-5 h-5" /> },
-    { name: 'Profile', to: `/profile/${username}`, icon: <User className="w-5 h-5" /> },
+    { name: 'Profile', to: `/profile/${user?.id}`, icon: <User className="w-5 h-5" /> },
     { name: 'Bookmarks', to: '/bookmarks', icon: <Bookmark className="w-5 h-5" /> },
   ];
 
