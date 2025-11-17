@@ -11,6 +11,8 @@ import { FeedPage } from './pages/FeedPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { BookmarkPage } from './pages/BookmarkPage';
 import { AdminDashboardPage } from './pages/AdminDashboard';
+import { AdminPostManagementPage } from './pages/AdminPostManagementPage';
+import { AdminUserManagementPage } from './pages/AdminUserManagementPage';
 
 
 export function App() {
@@ -64,6 +66,8 @@ export function App() {
             }
           >
             <Route path="dashboard" element={<AdminDashboardPage />} />
+            <Route path="users" element={<AdminUserManagementPage />} />
+            <Route path="posts" element={<AdminPostManagementPage />} />
           </Route>
         </Routes>
       </AuthProvider>
