@@ -40,3 +40,13 @@ export const toggleBookmark = (postId, axiosPrivate) => {
 export const getBookmarkedPosts = (axiosPrivate) => {
   return axiosPrivate.get('/posts/bookmarks');
 };
+
+/**
+ * Gets all posts for a specific user.
+ * @param {string} userId The ID of the user
+ * @param {object} axiosPrivate The private axios instance
+ */
+export const getPostsByUserId = (userId, axiosPrivate) => {
+  // Your doc says: GET /api/posts?userId=...
+  return axiosPrivate.get(`/posts?userId=${userId}`);
+};
