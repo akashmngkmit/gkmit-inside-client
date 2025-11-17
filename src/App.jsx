@@ -49,7 +49,7 @@ export function App() {
           {/* protected */}
           <Route 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['employee']}>
                 <MainAppLayout />
               </ProtectedRoute>
             }
@@ -61,7 +61,7 @@ export function App() {
           <Route 
             path="/admin" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['admin']}>
                 <AdminLayout />
               </ProtectedRoute>
             }

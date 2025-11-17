@@ -19,3 +19,38 @@ export const registerUser = async (userData) => {
     throw new Error(error.message || 'An unknown error occurred.');
   }
 };
+
+/**
+ * Handles the user login API call.
+ * @param {object} credentials - The user's login credentials.
+ * @param {string} credentials.email
+ * @param {string} credentials.password
+ */
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || 'Login failed.');
+    }
+    throw new Error(error.message || 'An unknown error occurred.');
+  }
+};
+
+/**
+ * Calls the /refresh endpoint to get a new accessToken.
+ * This relies on the httpOnly cookie.
+ */
+export const refreshAccessToken = async () => {
+  try {
+    // We send an empty POST request, as per your docs
+    const response = await api.post('/auth/refresh', {});
+    return response.data; // e.g., { success: true, data: { accessToken: "..." } }
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || 'Session expired.');
+    }
+    throw new Error(error.message || 'An unknown error occurred.');
+  }
+};
