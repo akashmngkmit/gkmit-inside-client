@@ -6,22 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 
-import { useAuth } from '../store/AuthContext.jsx'; // 2. This path is correct
+import { useAuth } from '../store/AuthContext.jsx'; 
 
 export const Login = () => {
-  // Use a single state for form data
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   
-  // New state for loading
   const [isLoading, setIsLoading] = useState(false);
   
-  // Get the login function from your AuthContext
-  const { login } = useAuth(); // 3. Get the REFACTORED login function
+  const { login } = useAuth(); 
 
-  // Handler for form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -30,23 +26,17 @@ export const Login = () => {
     }));
   };
 
-  // --- REFACTORED Submit handler ---
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // 4. Set loading true
+    setIsLoading(true); 
     
     try {
-      // 5. Call the login function
       await login(formData.email, formData.password);
-      // Navigation is now handled inside the AuthContext!
-      
     } catch (err) {
-      // 6. Handle login failures from the API
       console.error("Login failed:", err);
-      // This will show "Invalid credentials" or "Your account is pending..."
       toast.error(err.message || 'Login failed. Please try again.');
     } finally {
-      setIsLoading(false); // 7. Set loading false
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +67,7 @@ export const Login = () => {
               value={formData.email}
               onChange={handleChange} 
               placeholder="you@company.com"
-              disabled={isLoading} // 8. Disable on load
+              disabled={isLoading} 
             />
           </div>
           <div className="space-y-2">
@@ -91,13 +81,12 @@ export const Login = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              disabled={isLoading} // 8. Disable on load
+              disabled={isLoading}
             />
           </div>
 
           <div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {/* 9. Show loading text */}
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </div>
