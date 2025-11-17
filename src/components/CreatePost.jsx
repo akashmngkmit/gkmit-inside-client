@@ -6,11 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge'; 
+import { Badge } from '@/components/ui/badge';
 import { Send, XIcon, Image as ImageImageIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import { useAxiosPrivate } from '@/config/useAxiosPrivate';
+import { createPost } from '@/api/PostApi';
 
 export const CreatePost = () => {
   const { user } = useAuth();
+  const axiosPrivate = useAxiosPrivate(); 
   
   const [formData, setFormData] = useState({
     title: '',
@@ -23,7 +27,9 @@ export const CreatePost = () => {
   
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,8 +57,14 @@ export const CreatePost = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) { 
+        setError('File is too large. Maximum size is 5MB.');
+        removeImage();
+        return;
+      }
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
+      setError(null);
     } else {
       setImageFile(null);
       setImagePreview('');
@@ -62,27 +74,52 @@ export const CreatePost = () => {
   const removeImage = () => {
     setImageFile(null);
     setImagePreview('');
-    document.getElementById('file-upload').value = null;
+    if (document.getElementById('file-upload')) {
+      document.getElementById('file-upload').value = null;
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     if (!imageFile) {
       setError('An image is required to create a post.');
+      setIsLoading(false);
       return;
     }
     
-    // clearing form
-    setFormData({ title: '', subtitle: '', description: '' });
-    setTags([]);
-    setCurrentTag('');
-    removeImage();
+    const postData = new FormData();
+    postData.append('title', formData.title);
+    postData.append('subtitle', formData.subtitle);
+    postData.append('description', formData.description);
+    postData.append('image', imageFile);
+    
+    if (tags.length > 0) {
+      postData.append('tags', tags.join(','));
+    }
+
+    try {
+      const response = await createPost(postData, axiosPrivate);
+      toast.success(response.data.message || 'Post created successfully!');
+      setFormData({ title: '', subtitle: '', description: '' });
+      setTags([]);
+      setCurrentTag('');
+      removeImage();
+
+    } catch (err) {
+      console.error("Post creation failed:", err);
+      const apiErrorMessage = err.response?.data?.message || err.message || 'An unknown error occurred.';
+      setError(apiErrorMessage); 
+      toast.error(apiErrorMessage); 
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const TITLE_MAX = 30;
-  const SUBTITLE_MAX = 50;
+  const TITLE_MAX = 100;
+  const SUBTITLE_MAX = 300;
 
   return (
     <Card className="w-full">
@@ -96,50 +133,55 @@ export const CreatePost = () => {
             </Avatar>
 
             <div className="flex-1 space-y-3">
-              {/* title */}
               <div className="space-y-1">
+                <Label htmlFor="title" className="sr-only">Post Title</Label>
                 <Input
+                  id="title"
                   name="title"
                   placeholder="Post Title (Required)"
                   value={formData.title}
                   onChange={handleChange}
                   required
                   maxLength={TITLE_MAX}
-                  className="font-semibold"
+                  className="font-semibold text-lg"
+                  disabled={isLoading}
                 />
                 <p className="text-xs text-right text-gray-500">
                   {formData.title.length} / {TITLE_MAX}
                 </p>
               </div>
               
-              {/* subtitle */}
               <div className="space-y-1">
+                <Label htmlFor="subtitle" className="sr-only">Subtitle</Label>
                 <Textarea
+                  id="subtitle"
                   name="subtitle"
                   placeholder="Subtitle (Optional)"
                   value={formData.subtitle}
                   onChange={handleChange}
                   maxLength={SUBTITLE_MAX}
-                  className="min-h-20"
+                  className="min-h-[80px]"
+                  disabled={isLoading}
                 />
                 <p className="text-xs text-right text-gray-500">
                   {formData.subtitle.length} / {SUBTITLE_MAX}
                 </p>
               </div>
 
-              {/* desc */}
+              <Label htmlFor="description" className="sr-only">Description</Label>
               <Textarea
+                id="description"
                 name="description"
                 placeholder={`What's on your mind, ${user?.name}? (Required)`}
                 value={formData.description}
                 onChange={handleChange}
                 required
                 className="min-h-[100px]"
+                disabled={isLoading}
               />
               
-              {/* tag */}
               <div className="space-y-2">
-                <Label htmlFor="tags-input">Tags</Label>
+                <Label htmlFor="tags-input">Tags (Type and press Enter)</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map((tag) => (
                     <Badge key={tag} variant="secondary" className="flex items-center gap-1">
@@ -153,28 +195,28 @@ export const CreatePost = () => {
                 </div>
                 <Input
                   id="tags-input"
-                  placeholder="Type a tag and press Enter..."
+                  placeholder="e.g., react, devops, frontend..."
                   value={currentTag}
                   onChange={handleTagChange}
                   onKeyDown={handleTagKeyDown}
+                  disabled={isLoading}
                 />
               </div>
               
-              {/* thumbnail */}
               <div className="space-y-2">
                 <Label htmlFor="file-upload">Attach Image (Required)</Label>
                 <Input
                   id="file-upload"
                   type="file"
-                  name="media"
+                  name="image" 
                   required
                   onChange={handleFileChange}
                   className="file:text-sm file:font-medium"
                   accept="image/png, image/jpeg, image/gif"
+                  disabled={isLoading}
                 />
               </div>
 
-              {/* image preview */}
               {imagePreview && (
                 <div className="relative w-full h-64 rounded-md overflow-hidden">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
@@ -184,7 +226,9 @@ export const CreatePost = () => {
                     size="icon"
                     className="absolute top-2 right-2 h-7 w-7"
                     onClick={removeImage}
+                    disabled={isLoading}
                   >
+                    <XIcon className="h-4 w-4" />
                   </Button>
                 </div>
               )}
@@ -196,9 +240,18 @@ export const CreatePost = () => {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" className="gap-2">
-              <Send className="h-4 w-4" />
-              Post
+            <Button type="submit" className="gap-2" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span className="animate-spin h-4 w-4 border-2 border-t-transparent rounded-full"></span>
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Post
+                </>
+              )}
             </Button>
           </div>
         </form>
