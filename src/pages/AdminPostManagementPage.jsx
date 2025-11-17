@@ -23,7 +23,7 @@ export const AdminPostManagementPage = () => {
         signal: controller.signal,
       });
       setPosts(response.data.data);
-      console.log(response.data.data)
+      console.log(response.da)
     } catch (err) {
       if (err.name !== 'CanceledError') {
         console.error("Failed to fetch posts:", err);
