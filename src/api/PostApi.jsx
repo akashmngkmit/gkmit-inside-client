@@ -32,3 +32,11 @@ export const toggleLike = (postId, axiosPrivate) => {
 export const toggleBookmark = (postId, axiosPrivate) => {
   return axiosPrivate.post(`/posts/${postId}/bookmark`);
 };
+
+/**
+ * Gets all posts bookmarked by the current user.
+ * @param {object} axiosPrivate - The private, intercepted axios instance
+ */
+export const getBookmarkedPosts = (axiosPrivate) => {
+  return axiosPrivate.get('/posts/bookmarks');
+};
