@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+// FIX: Using relative path
 import { useAuth } from '../store/AuthContext.jsx'; 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,8 @@ export const LeftSidebar = () => {
   ];
 
   return (
-    <Card className="w-full h-full sticky top-6 p-4">
+    // FIX: Removed 'sticky top-6' from here. It's now in MainAppLayout.jsx
+    <Card className="w-full h-full p-4">
       <div className="flex flex-col justify-between h-full">
         <div className="space-y-4">
           <h2 className="text-xl font-bold px-4">GKMIT-INSIDE</h2>
