@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom'; 
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { ThumbsUp, MessageSquare, Bookmark, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-// ShadCN Components for the menu and dialogs
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +24,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-// --- Local Imports ---
 import { timeAgo } from '@/lib/dateUtils.jsx';
 import { useAuth } from '../store/AuthContext.jsx'; 
 import { useAxiosPrivate } from '../config/useAxiosPrivate.js';
@@ -33,19 +31,16 @@ import { toggleLike, toggleBookmark } from '../api/PostApi.jsx'
 import { EditPostModal } from './EditPostModal.jsx';
 
 export const PostCard = ({ post }) => {
-  const { user } = useAuth(); // Get the currently logged-in user
+  const { user } = useAuth();
   
-  // --- State for interactions ---
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.reactionCount || 0);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
-  
-  // --- State for modals ---
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const axiosPrivate = useAxiosPrivate();
 
-  // Deconstruct the post object
   const { 
     _id: postId, 
     author, 
@@ -59,11 +54,9 @@ export const PostCard = ({ post }) => {
     postStatus,
   } = post;
 
-  // --- Check if the logged-in user is the author ---
   const isAuthor = user?._id === author?._id; 
   const canEdit = isAuthor && postStatus === 'pending';
 
-  // --- Interaction Handlers ---
   const handleToggleLike = async () => {
     setIsLiked(prev => !prev);
     setLikeCount(prev => (isLiked ? prev - 1 : prev + 1));
@@ -72,8 +65,8 @@ export const PostCard = ({ post }) => {
     } catch (error) {
       console.error("Failed to toggle like:", error);
       toast.error("Failed to update like status.");
-      setIsLiked(prev => !prev); // Revert
-      setLikeCount(prev => (isLiked ? prev + 1 : prev - 1)); // Revert
+      setIsLiked(prev => !prev);
+      setLikeCount(prev => (isLiked ? prev + 1 : prev - 1));
     }
   };
   
