@@ -1,23 +1,32 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { Card } from "@/components/ui/card";
+// 1. Import the new SearchProvider
+import { SearchProvider } from '@/store/SearchContext.jsx';
+// Fix: using relative paths
 import { LeftSidebar } from '../components/LeftSidebar.jsx';
 import { RightSidebar } from '../components/RightSidebar.jsx';
 
 export const MainAppLayout = () => {
   return (
-    <div className="min-h-screen w-full bg-gray-100">
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] xl:grid-cols-[300px_1fr_340px] gap-6 py-6 lg:items-start">
-        <aside className="hidden lg:block sticky top-6">
-          <LeftSidebar />
-        </aside>
-        <main className="w-full">
-          <Outlet />
-        </main>
-        <aside className="hidden lg:block sticky top-6">
-          <RightSidebar />
-        </aside>
+    // 2. Wrap the layout in the SearchProvider
+    <SearchProvider>
+      <div className="min-h-screen w-full bg-gray-100">
+        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-[280px_1fr_300px] xl:grid-cols-[300px_1fr_340px] gap-6 py-6 lg:items-start">
+          
+          <aside className="hidden lg:block sticky top-6">
+            <LeftSidebar />
+          </aside>
+
+          <main className="w-full">
+            <Outlet />
+          </main>
+
+          <aside className="hidden lg:block sticky top-6">
+            <RightSidebar />
+          </aside>
+
+        </div>
       </div>
-    </div>
+    </SearchProvider>
   );
 };
