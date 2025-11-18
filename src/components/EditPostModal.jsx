@@ -22,7 +22,7 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
     description: post.description || '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
+  // const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     setFormData({

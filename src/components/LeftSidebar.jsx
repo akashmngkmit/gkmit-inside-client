@@ -33,7 +33,6 @@ export const LeftSidebar = () => {
   ];
 
   return (
-    // FIX: Removed 'sticky top-6' from here. It's now in MainAppLayout.jsx
     <Card className="w-full h-full p-4">
       <div className="flex flex-col justify-between h-full">
         <div className="space-y-4">

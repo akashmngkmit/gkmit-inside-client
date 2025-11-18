@@ -1,6 +1,5 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-// FIX: Using alias paths '@/' which is consistent with the project structure
 import { SearchProvider } from '@/store/SearchContext.jsx'; 
 import { LeftSidebar } from '@/components/LeftSidebar.jsx';
 import { RightSidebar } from '@/components/RightSidebar.jsx';
@@ -16,9 +15,7 @@ export const MainAppLayout = () => {
             <LeftSidebar />
           </aside>
 
-          {/* 2. MAIN CONTENT & MOBILE SIDEBARS */}
           <main className="w-full space-y-6">
-            {/* NEW: Display Right Sidebar content ABOVE feed on mobile (col-1) */}
             <div className="block lg:hidden">
               <RightSidebar />
             </div>
@@ -26,7 +23,6 @@ export const MainAppLayout = () => {
             <Outlet />
           </main>
 
-          {/* 3. RIGHT SIDEBAR (Hidden on mobile, Sticky on large screens) */}
           <aside className="hidden lg:block sticky top-6">
             <RightSidebar />
           </aside>
