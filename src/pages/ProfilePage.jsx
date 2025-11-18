@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostCard } from '../components/PostCard.jsx';
 import { ProfileHeader } from '../components/ProfileHeader.jsx'; 
 import {useAxiosPrivate} from '../config/useAxiosPrivate.js';
-import { getPostsByUserId } from '../api/PostApi.jsx';
+import { getPostsByUserId } from '@/api/PostApi.js';
 
 const getInitials = (name) => {
     if (!name) return 'U';

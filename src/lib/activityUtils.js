@@ -4,7 +4,6 @@
  * @returns {string} - "You" if the actor matches the current user, or the actor's name otherwise.
  */
 export const formatActorName = (activity, currentUserName) => {
-    // Note: We use the name because the service only returns actorName, not actorId.
     if (activity.actorName === currentUserName) {
         return "You";
     }
@@ -27,16 +26,15 @@ export const formatActivityMessage = (activity, currentUserName) => {
 
         case 'REACTED':
             if (activity.isMyPost) {
-                // Example: "You reacted to your post..." OR "User X reacted to your post..."
                 return `${actor} reacted to your post ${postTitle}`;
             }
-            return `${actor} reacted to a post about ${postTitle}`; // Should not happen in current implementation but good for safety
+            return `${actor} reacted to a post about ${postTitle}`; 
 
         case 'COMMENTED':
             if (activity.isMyPost) {
                 return `${actor} commented on your post ${postTitle}`;
             }
-            return `${actor} commented on a post about ${postTitle}`; // Safety fallback
+            return `${actor} commented on a post about ${postTitle}`; 
 
         default:
             return `${actor} performed an action.`;
@@ -50,7 +48,7 @@ export const formatActivityMessage = (activity, currentUserName) => {
  * @returns {string} Two-letter initials.
  */
 export const getInitials = (name) => {
-    if (!name || name === "You") return 'U'; // Return 'U' or 'YO' if the name is 'You'
+    if (!name || name === "You") return 'U'; 
     const parts = name.split(' ');
     if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();

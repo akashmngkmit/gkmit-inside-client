@@ -17,7 +17,7 @@ export const PostDetailPage = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const fetchPostDetails = useCallback(async (controller) => {
-    setIsLoading(true); // Always show loading when refetching
+    setIsLoading(true); //loading
     setError(null);
     try {
       const response = await getPostById(postId, axiosPrivate, {

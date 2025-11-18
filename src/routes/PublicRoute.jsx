@@ -1,5 +1,4 @@
 import React from 'react';
-// FIX 2: Changed alias path to relative path
 import { useAuth } from '../store/AuthContext.jsx'; 
 import { Navigate } from 'react-router-dom';
 

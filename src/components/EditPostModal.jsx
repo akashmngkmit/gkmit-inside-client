@@ -14,7 +14,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
-// import { updatePostStatus } from '@/api/AdminApi.jsx';
 
 export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +21,6 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
     description: post.description || '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  // const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     setFormData({

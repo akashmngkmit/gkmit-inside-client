@@ -1,15 +1,12 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-// Fix: Corrected alias path '@/' to relative path '../'
 import { useAuth } from '../store/AuthContext.jsx'; 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, Users, FileText, LogOut } from 'lucide-react';
 
-// Reusable NavLink component for the admin sidebar
 const AdminNavLink = ({ to, icon, children }) => {
   const location = useLocation();
-  // Check if the current path starts with the 'to' link
   const isActive = location.pathname.startsWith(to);
 
   return (

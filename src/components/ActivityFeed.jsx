@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { timeAgo } from '@/lib/dateUtils.jsx';
 import { formatActivityMessage, getInitials, formatActorName } from '../lib/activityUtils.js'; // <-- Import formatActorName
 import {useAxiosPrivate} from '../config/useAxiosPrivate.js';
-import { getActivityLog } from '../api/PostApi.jsx';
+import { getActivityLog } from '../api/PostApi.js';
 import { useAuth } from '@/store/AuthContext.jsx';
 
 

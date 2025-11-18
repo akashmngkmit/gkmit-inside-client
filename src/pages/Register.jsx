@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "sonner"; 
-import { registerUser } from '../api/AuthApi.jsx'; 
-
-// Import shadcn components
+import { registerUser } from '../api/AuthApi.js'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +14,6 @@ import {
 } from "@/components/ui/select";
 
 export const Register = () => {
-  // Use a single state for all form data
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,20 +25,15 @@ export const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Handler for text inputs with new validation logic
   const handleChange = (e) => {
     let { name, value } = e.target;
 
     if (name === 'email') {
-      // 1. Email check: Block spaces and block non-lowercase/non-numeric characters
-      // This is a common pattern for internal systems that require specific email formatting.
       if (value.includes(' ') || (/[A-Z]/).test(value)) {
         toast.warning("Email must be entirely lowercase and contain no spaces.", { duration: 1500 });
-        // Block the change but don't crash
         value = value.toLowerCase().replace(/\s/g, '');
       }
     } else if (name === 'name') {
-      // 2. Name check: Trim leading/trailing spaces for a clean entry
       value = value.trimStart();
     }
     
@@ -51,7 +43,6 @@ export const Register = () => {
     }));
   };
   
-  // Handler for <Select> component
   const handleDepartmentChange = (value) => {
     setFormData(prevData => ({
       ...prevData,
@@ -61,8 +52,6 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // --- 3. FINAL CLIENT-SIDE VALIDATION ---
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match.');
       return;
@@ -75,27 +64,20 @@ export const Register = () => {
       toast.error('Please select a department.');
       return;
     }
-    // Final check for email consistency
     if (formData.email !== formData.email.toLowerCase() || formData.email.includes(' ')) {
         toast.error('Please ensure your email contains only lowercase letters and no spaces.');
         return;
     }
     
     setIsLoading(true);
-
-    // 4. Prepare data for the API
     const { confirmPassword, ...apiData } = formData;
 
     try {
-      // 5. Call the API
       const response = await registerUser(apiData);
-      
-      // 6. Show success toast and redirect
       toast.success(response.message || 'Registration successful!');
       navigate('/login');
 
     } catch (error) {
-      // 7. Show error toast from API
       console.error("Registration failed:", error);
       toast.error(error.message || 'An unknown error occurred.');
     } finally {
@@ -119,7 +101,6 @@ export const Register = () => {
         </div>
 
         <div className="space-y-4">
-          {/* --- Name --- */}
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
             <Input
@@ -133,7 +114,6 @@ export const Register = () => {
               disabled={isLoading}
             />
           </div>
-          {/* --- Email --- */}
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
             <Input
@@ -148,7 +128,6 @@ export const Register = () => {
               disabled={isLoading}
             />
           </div>
-          {/* --- Department --- */}
           <div className="space-y-2">
             <Label htmlFor="department">Department</Label>
             <Select
@@ -168,7 +147,6 @@ export const Register = () => {
               </SelectContent>
             </Select>
           </div>
-          {/* --- Password --- */}
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -183,7 +161,6 @@ export const Register = () => {
               disabled={isLoading}
             />
           </div>
-          {/* --- Confirm Password --- */}
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Confirm Password</Label>
             <Input
