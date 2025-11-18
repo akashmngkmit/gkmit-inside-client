@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
-import { updatePostStatus } from '@/api/AdminApi.jsx';
+// import { updatePostStatus } from '@/api/AdminApi.jsx';
 
 export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => {
   const [formData, setFormData] = useState({
@@ -46,7 +46,7 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
     };
 
     try {
-      await updatePost(post._id, updateData, axiosPrivate);
+    //   await updatePost(post._id, updateData, axiosPrivate);
       toast.success('Post updated successfully!');
       
       if (onPostUpdated) {
