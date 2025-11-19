@@ -74,7 +74,7 @@ export const AdminUserManagementPage = () => {
       <Tabs 
         defaultValue="pending" 
         className="w-full"
-        onValueChange={(value) => setCurrentTab(value)} // This triggers the API call
+        onValueChange={(value) => setCurrentTab(value)}
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="pending">Pending</TabsTrigger>
