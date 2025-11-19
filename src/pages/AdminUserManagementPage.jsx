@@ -49,7 +49,6 @@ export const AdminUserManagementPage = () => {
     return () => controller.abort();
   }, [fetchUsersByStatus, currentTab]); // Re-run if currentTab changes
 
-  // --- 7. Handle Approve/Reject ---
   const handleUpdateStatus = async (userId, status) => {
     // Optimistic UI update
     const originalUsers = [...users];
@@ -77,7 +76,7 @@ export const AdminUserManagementPage = () => {
       <Tabs 
         defaultValue="pending" 
         className="w-full"
-        onValueChange={(value) => setCurrentTab(value)} // This triggers the API call
+        onValueChange={(value) => setCurrentTab(value)}
       >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="pending">Pending</TabsTrigger>
@@ -85,7 +84,6 @@ export const AdminUserManagementPage = () => {
           <TabsTrigger value="rejected">Rejected</TabsTrigger>
         </TabsList>
         
-        {/* We only need one TabsContent because our 'users' state updates */}
         <TabsContent value={currentTab} className="mt-4">
           {isLoading ? (
             <p>Loading users...</p>

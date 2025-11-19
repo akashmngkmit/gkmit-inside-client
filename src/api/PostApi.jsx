@@ -69,3 +69,11 @@ export const getPostById = (postId, axiosPrivate) => {
 export const addComment = (postId, content, axiosPrivate) => {
   return axiosPrivate.post(`/posts/${postId}/comment`, { content });
 };
+
+/**
+ * Fetches the personalized activity log for the logged-in user.
+ * @param {object} axiosPrivate - The private, intercepted axios instance
+ */
+export const getActivityLog = (axiosPrivate) => {
+  return axiosPrivate.get('/posts/activity');
+};
