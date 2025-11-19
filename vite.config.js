@@ -17,9 +17,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  test: {
+test: {
+    // 1. Test Discovery: Tells Vitest to look for files in the src/tests folder
+    include: ['src/tests/**/*.test.js'],
+    
+    // 2. Environment: Set the testing environment
     environment: 'jsdom',
-    setupFiles: './src/setupTests.js',
+    
+    // 3. Global Mocks: Makes 'describe', 'it', 'expect' global
     globals: true,
+
+    // 4. Alias Resolution: This is redundant if 'resolve.alias' is set, but helpful for Vitest stability.
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+    
+    // 5. Setup Files (must be empty or point to a valid file)
+    setupFiles: [], 
   },
 });
