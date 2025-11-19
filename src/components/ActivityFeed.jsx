@@ -7,15 +7,21 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { timeAgo } from '@/lib/dateUtils.jsx';
-import { formatActivityMessage, getInitials } from '../lib/activityUtils.js';
+import { formatActivityMessage, getInitials, formatActorName } from '../lib/activityUtils.js'; // <-- Import formatActorName
 import {useAxiosPrivate} from '../config/useAxiosPrivate.js';
 import { getActivityLog } from '../api/PostApi.jsx';
+import { useAuth } from '@/store/AuthContext.jsx';
+
+
 
 export const ActivityFeed = () => {
   const [activities, setActivities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
+    const { user } = useAuth();
+    console.log(user)
+
 
   useEffect(() => {
     let isMounted = true;
@@ -61,20 +67,23 @@ export const ActivityFeed = () => {
         ) : (
           <div className="flex flex-col gap-4">
             {activities.length > 0 ? (
-              activities.map((activity) => (
-                <div key={activity._id} className="flex items-start gap-3">
-                  <Avatar className="size-9">
-                    {/* Use the new utility to get initials */}
-                    <AvatarFallback>{getInitials(activity.actorName)}</AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm">
-                    {/* Use the new utility to format the message */}
-                    <p className="text-gray-800">{formatActivityMessage(activity)}</p>
-                    {/* Use the existing timeAgo utility */}
-                    <p className="text-xs text-gray-500">{timeAgo(new Date(activity.createdAt))}</p>
+              activities.map((activity) => {
+                const actorDisplayName = formatActorName(activity, user.name);
+                
+                return (
+                  <div key={activity._id} className="flex items-start gap-3">
+                    <Avatar className="size-9">
+                      <AvatarFallback>{getInitials(actorDisplayName)}</AvatarFallback> 
+                    </Avatar>
+                    <div className="text-sm">
+                      <p className="text-gray-800">
+                        {formatActivityMessage(activity, user.name)}
+                      </p>
+                      <p className="text-xs text-gray-500">{timeAgo(new Date(activity.createdAt))}</p>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="text-sm text-gray-500">No recent activity.</p>
             )}
