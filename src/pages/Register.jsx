@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "sonner"; // 1. Import the toaster
+import { registerUser } from '@/api/AuthApi';
 
+// Import shadcn components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,10 +22,11 @@ export const Register = () => {
     password: '',
     confirmPassword: '',
     department: '',
-    role: 'Employee'
   });
   
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,14 +43,7 @@ export const Register = () => {
     }));
   };
 
-  const handleRoleChange = (value) => {
-    setFormData(prevData => ({
-      ...prevData,
-      role: value
-    }));
-  };
-
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     
@@ -54,9 +51,26 @@ export const Register = () => {
       setError('Passwords do not match.');
       return;
     }
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+    if (formData.password.length < 6) { 
+      setError('Password must be at least 6 characters long.');
       return;
+    }
+    
+    setIsLoading(true);
+
+    const { confirmPassword, ...apiData } = formData;
+
+    try {
+      const response = await registerUser(apiData);
+      toast.success(response.message || 'Registration successful!');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+
+    } catch (err) {
+      console.error("Registration failed:", err);
+      toast.error(err.message || 'An error occurred.');
+      setIsLoading(false); 
     }
   };
 
@@ -83,8 +97,9 @@ export const Register = () => {
               name="name"
               type="text"
               required
-              value={formData.name} 
-              onChange={handleChange} 
+              disabled={isLoading} 
+              value={formData.name}
+              onChange={handleChange}
               placeholder="John Doe"
             />
           </div>
@@ -96,47 +111,35 @@ export const Register = () => {
               type="email"
               autoComplete="email"
               required
-              value={formData.email} 
+              disabled={isLoading}
+              value={formData.email}
               onChange={handleChange}
               placeholder="you@company.com"
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select 
-                required 
-                value={formData.department}
-                onValueChange={handleDepartmentChange}
-              >
-                <SelectTrigger id="department">
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hr">HR</SelectItem>
-                  <SelectItem value="recruitment">Recruitment</SelectItem>
-                  <SelectItem value="developer">Developer</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select 
-                required 
-                value={formData.role}
-                onValueChange={handleRoleChange}
-              >
-                <SelectTrigger id="role">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Employee">Employee</SelectItem>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          
+          {/* Department Select */}
+          <div className="space-y-2">
+            <Label htmlFor="department">Department</Label>
+            <Select 
+              required 
+              disabled={isLoading}
+              value={formData.department}
+              onValueChange={handleDepartmentChange}
+            >
+              <SelectTrigger id="department">
+                <SelectValue placeholder="Select department" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="HR">HR</SelectItem>
+                <SelectItem value="Recruitment">Recruitment</SelectItem>
+                <SelectItem value="Developer">Developer</SelectItem>
+                <SelectItem value="Engineering">Engineering</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+          
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -145,9 +148,10 @@ export const Register = () => {
               type="password"
               autoComplete="new-password"
               required
-              value={formData.password} 
+              disabled={isLoading}
+              value={formData.password}
               onChange={handleChange}
-              placeholder="Minimum 8 characters"
+              placeholder="Minimum 6 characters"
             />
           </div>
           <div className="space-y-2">
@@ -158,7 +162,8 @@ export const Register = () => {
               type="password"
               autoComplete="new-password"
               required
-              value={formData.confirmPassword} 
+              disabled={isLoading}
+              value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="••••••••"
             />
@@ -171,8 +176,8 @@ export const Register = () => {
             will be able to log in once your account has been approved.
           </div>
           <div>
-            <Button type="submit" className="w-full">
-              Register
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Registering..." : "Register"}
             </Button>
           </div>
         </div>

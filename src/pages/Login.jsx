@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/store/AuthContext';
-
+import { toast } from 'sonner'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+
+import { useAuth } from '../store/AuthContext.jsx'; 
 
 export const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  const {login} = useAuth()
+  
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { login } = useAuth(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,8 +28,16 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // for mock login
-    await login(formData.email, formData.password);
+    setIsLoading(true); 
+    
+    try {
+      await login(formData.email, formData.password);
+    } catch (err) {
+      console.error("Login failed:", err);
+      toast.error(err.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,7 +52,7 @@ export const Login = () => {
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600">
             Welcome back! Please enter your credentials.
-          </p>
+          </p> 
         </div>
         
         <div className="space-y-4 sm:space-y-6">
@@ -55,6 +67,7 @@ export const Login = () => {
               value={formData.email}
               onChange={handleChange} 
               placeholder="you@company.com"
+              disabled={isLoading} 
             />
           </div>
           <div className="space-y-2">
@@ -68,11 +81,13 @@ export const Login = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
+
           <div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </div>
         </div>

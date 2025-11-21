@@ -13,6 +13,7 @@ import { BookmarkPage } from './pages/BookmarkPage';
 import { AdminDashboardPage } from './pages/AdminDashboard';
 import { AdminPostManagementPage } from './pages/AdminPostManagementPage';
 import { AdminUserManagementPage } from './pages/AdminUserManagementPage';
+import { Toaster } from './components/ui/sonner';
 
 
 export function App() {
@@ -48,7 +49,7 @@ export function App() {
           {/* protected */}
           <Route 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['employee']}>
                 <MainAppLayout />
               </ProtectedRoute>
             }
@@ -60,7 +61,7 @@ export function App() {
           <Route 
             path="/admin" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={['admin']}>
                 <AdminLayout />
               </ProtectedRoute>
             }
@@ -71,6 +72,7 @@ export function App() {
           </Route>
         </Routes>
       </AuthProvider>
+      <Toaster richColors position="top-right" />
     </BrowserRouter>
   );
 }
