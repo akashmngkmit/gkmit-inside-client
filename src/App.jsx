@@ -13,6 +13,7 @@ import { BookmarkPage } from './pages/BookmarkPage';
 import { AdminDashboardPage } from './pages/AdminDashboard';
 import { AdminPostManagementPage } from './pages/AdminPostManagementPage';
 import { AdminUserManagementPage } from './pages/AdminUserManagementPage';
+import { PostDetailPage } from './pages/PostDetailPage';
 import { Toaster } from './components/ui/sonner';
 
 
@@ -56,6 +57,7 @@ export function App() {
           >
             <Route path="/feed" element={<FeedPage />} />
             <Route path="/profile/:userId" element={<ProfilePage />} />
+            <Route path="/post/:postId" element={<PostDetailPage />} />
             <Route path="/bookmarks" element={<BookmarkPage />} />
           </Route>
           <Route 
