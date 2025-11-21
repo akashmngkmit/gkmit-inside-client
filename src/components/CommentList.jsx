@@ -3,9 +3,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { timeAgo } from '@/lib/dateUtils';
 import { Card, CardContent } from "@/components/ui/card";
 
-/**
- * Renders a list of comments for a post.
- */
+
 export const CommentList = ({ comments }) => {
   if (!comments || comments.length === 0) {
     return (
@@ -23,9 +21,6 @@ export const CommentList = ({ comments }) => {
       {comments.map((comment) => (
         <div key={comment._id} className="flex items-start gap-3">
           <Avatar className="h-9 w-9">
-            {/* Defensive check for comments from deleted users.
-              Your API doc shows comment.userId is an object.
-            */}
             <AvatarFallback>
               {comment.userId?.name?.split(' ').map(n => n[0]).join('') || 'U'}
             </AvatarFallback>

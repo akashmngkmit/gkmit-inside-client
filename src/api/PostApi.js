@@ -59,7 +59,6 @@ export const getPostById = (postId, axiosPrivate) => {
   return axiosPrivate.get(`/posts/${postId}`);
 };
 
-// --- NEW: ADD COMMENT ---
 /**
  * Adds a comment to a post.
  * @param {string} postId - The ID of the post to comment on

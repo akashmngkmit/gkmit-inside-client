@@ -13,12 +13,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
-// API Imports
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
 import { updatePostStatus } from '@/api/AdminApi.jsx';
 
 export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => {
-  // State for the form, initialized with the post's data
   const [formData, setFormData] = useState({
     title: post.title || '',
     description: post.description || '',
@@ -26,7 +24,6 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
   const [isLoading, setIsLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
 
-  // Sync state if the 'post' prop changes
   useEffect(() => {
     setFormData({
       title: post.title || '',
@@ -43,7 +40,6 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
     e.preventDefault();
     setIsLoading(true);
 
-    // Only send the fields your API expects
     const updateData = {
       title: formData.title,
       description: formData.description,
@@ -53,7 +49,6 @@ export const EditPostModal = ({ post, isOpen, onOpenChange, onPostUpdated }) => 
       await updatePost(post._id, updateData, axiosPrivate);
       toast.success('Post updated successfully!');
       
-      // Call the callback to refresh the feed
       if (onPostUpdated) {
         onPostUpdated();
       }

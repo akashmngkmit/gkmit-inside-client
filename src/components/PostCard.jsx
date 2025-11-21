@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
 import { toggleBookmark, toggleLike } from '@/api/PostApi.js';
-// ShadCN Components for the menu and dialogs
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,25 +27,20 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-// --- Local Imports ---
 import { timeAgo } from '@/lib/dateUtils.jsx';
 import { useAuth } from '../store/AuthContext.jsx'; 
 import { EditPostModal } from './EditPostModal.jsx';
 
 export const PostCard = ({ post }) => {
-  const { user } = useAuth(); // Get the currently logged-in user
-  
-  // --- State for interactions ---
+  const { user } = useAuth(); 
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.reactionCount || 0);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
   
-  // --- State for modals ---
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const axiosPrivate = useAxiosPrivate();
 
-  // Deconstruct the post object
   const { 
     _id: postId, 
     author, 
@@ -59,11 +54,9 @@ export const PostCard = ({ post }) => {
     postStatus,
   } = post;
 
-  // --- Check if the logged-in user is the author ---
   const isAuthor = user?._id === author?._id; 
   const canEdit = isAuthor && postStatus === 'pending';
 
-  // --- Interaction Handlers ---
   const handleToggleLike = async () => {
     setIsLiked(prev => !prev);
     setLikeCount(prev => (isLiked ? prev - 1 : prev + 1));
@@ -89,7 +82,6 @@ export const PostCard = ({ post }) => {
     }
   };
   
-  // --- Delete Handler ---
   const handleDeletePost = async () => {
     try {
       // await deletePost(postId, axiosPrivate);
@@ -208,14 +200,11 @@ export const PostCard = ({ post }) => {
               Like
             </Button>
             
-            {/* --- UPDATED COMMENT BUTTON --- */}
-            {/* This is now a Link that looks like a Button */}
             <Button variant="ghost" className="flex items-center gap-2" asChild>
               <Link to={`/post/${postId}`}>
                 <MessageSquare className="w-5 h-5" /> Comment
               </Link>
             </Button>
-            {/* --- END OF CHANGE --- */}
             
             <Button 
               variant="ghost" 

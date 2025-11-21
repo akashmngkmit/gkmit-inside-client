@@ -11,26 +11,17 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from 'sonner';
-// 1. Import ShadCN Tabs
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-// --- API & Hook Imports ---
-// FIX: Corrected relative paths to alias paths
 import { useAxiosPrivate } from '@/config/useAxiosPrivate';
-// 2. Import the RENAMED function
 import  {getUsersByStatus, updateUserStatus } from '../api/AdminApi'
 import { timeAgo } from '@/lib/dateUtils';
 
 export const AdminUserManagementPage = () => {
-  // 3. Rename state to be generic
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
-  // 4. Add state for the current tab
   const [currentTab, setCurrentTab] = useState('pending');
-
-  // --- 5. Fetch Data Function (now dynamic) ---
   const fetchUsersByStatus = useCallback(async (status, controller) => {
     setIsLoading(true);
     setError(null);
@@ -51,27 +42,22 @@ export const AdminUserManagementPage = () => {
     }
   }, [axiosPrivate]);
 
-  // --- 6. Load Data on Mount & on Tab Change ---
   useEffect(() => {
     const controller = new AbortController();
-    fetchUsersByStatus(currentTab, controller); // Use currentTab
+    fetchUsersByStatus(currentTab, controller); 
     return () => controller.abort();
-  }, [fetchUsersByStatus, currentTab]); // Re-run if currentTab changes
+  }, [fetchUsersByStatus, currentTab]);
 
-  // --- 7. Handle Approve/Reject ---
   const handleUpdateStatus = async (userId, status) => {
-    // Optimistic UI update
     const originalUsers = [...users];
     setUsers(currentUsers => 
       currentUsers.filter(user => user._id !== userId) 
     );
 
     try {
-      // API call
       const response = await updateUserStatus(userId, status, axiosPrivate);
       toast.success(response.data.message || `User has been ${status}.`);
     } catch (err) {
-      // Revert on failure
       console.error("Failed to update user status:", err);
       toast.error(err.message || 'Failed to update user.');
       setUsers(originalUsers);
@@ -85,7 +71,6 @@ export const AdminUserManagementPage = () => {
         <p className="text-gray-600">Approve or reject new user registrations.</p>
       </CardHeader>
 
-      {/* 8. Add the Tabs component */}
       <Tabs 
         defaultValue="pending" 
         className="w-full"
@@ -97,7 +82,6 @@ export const AdminUserManagementPage = () => {
           <TabsTrigger value="rejected">Rejected</TabsTrigger>
         </TabsList>
         
-        {/* We only need one TabsContent because our 'users' state updates */}
         <TabsContent value={currentTab} className="mt-4">
           {isLoading ? (
             <p>Loading users...</p>

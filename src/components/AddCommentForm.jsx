@@ -3,15 +3,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from 'sonner';
-
-// --- API & Hook Imports (FIX: Using @/ alias and 'from') ---
 import { useAuth } from '@/store/AuthContext.jsx';
 import { useAxiosPrivate } from '@/config/useAxiosPrivate';
 import { addComment } from '@/api/PostApi';
 
-/**
- * A form for adding a new comment to a post.
- */
 export const AddCommentForm = ({ postId, onCommentPosted }) => {
   const { user } = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -27,18 +22,12 @@ export const AddCommentForm = ({ postId, onCommentPosted }) => {
     setIsLoading(true);
 
     try {
-      // Call API: POST /api/posts/:id/comment
       await addComment(postId, comment, axiosPrivate);
       toast.success('Comment posted successfully!');
-      
-      // Clear the form
       setComment('');
-      
-      // Tell the parent page (PostDetailPage) to refetch comments
       if (onCommentPosted) {
         onCommentPosted();
       }
-
     } catch (err) {
       console.error("Failed to post comment:", err);
       toast.error(err.response?.data?.message || err.message || 'Failed to post comment.');
