@@ -8,7 +8,7 @@ import { timeAgo } from '@/lib/dateUtils.jsx';
 import { toast } from 'sonner';
 
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
-import { toggleBookmark, toggleLike } from '@/api/PostApi.jsx';
+import { toggleBookmark, toggleLike } from '@/api/PostApi.js';
 
 export const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.isLiked);

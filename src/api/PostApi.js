@@ -47,6 +47,5 @@ export const getBookmarkedPosts = (axiosPrivate) => {
  * @param {object} axiosPrivate The private axios instance
  */
 export const getPostsByUserId = (userId, axiosPrivate) => {
-  // Your doc says: GET /api/posts?userId=...
   return axiosPrivate.get(`/posts?userId=${userId}`);
 };

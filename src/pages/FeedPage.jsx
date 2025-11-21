@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { CreatePost } from '../components/CreatePost.jsx';
 import { PostCard } from '../components/PostCard.jsx';
 import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
-import { getFeed } from '@/api/PostApi.jsx';
+import { getFeed } from '@/api/PostApi.js';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const FeedPage = () => {
