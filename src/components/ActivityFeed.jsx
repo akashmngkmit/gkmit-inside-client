@@ -19,8 +19,7 @@ export const ActivityFeed = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
-    const { user } = useAuth();
-    console.log(user)
+  const { user } = useAuth();
 
 
   useEffect(() => {
