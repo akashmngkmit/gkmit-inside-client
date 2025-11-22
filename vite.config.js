@@ -18,12 +18,12 @@ export default defineConfig({
     },
   },
 test: {
-    include: ['src/tests/**/*.test.js'],
+    include: ['src/tests/**/*.test.jsx'],
     environment: 'jsdom',
     globals: true,
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-    setupFiles: [], 
+    setupFiles: ['./src/tests/setup.js'], 
   },
 });

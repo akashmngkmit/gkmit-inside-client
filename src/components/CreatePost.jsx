@@ -166,7 +166,7 @@ export const CreatePost = () => {
                 </p>
               </div>
 
-              <Label htmlFor="description" className="sr-only">Description</Label>
+              <Label htmlFor="description" className="sr-only">Description * </Label>
               <Textarea
                 id="description"
                 name="description"
@@ -202,7 +202,7 @@ export const CreatePost = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="file-upload">Attach Image (Required)</Label>
+                <Label htmlFor="file-upload">Attach Image *</Label>
                 <Input
                   id="file-upload"
                   type="file"
