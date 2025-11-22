@@ -44,7 +44,6 @@ export const loginUser = async (credentials) => {
  */
 export const refreshAccessToken = async () => {
   try {
-    // We send an empty POST request, as per your docs
     const response = await api.post('/auth/refresh', {});
     return response.data; 
   } catch (error) {

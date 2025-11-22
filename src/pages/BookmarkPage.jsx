@@ -28,27 +28,21 @@ export const BookmarkPage = () => {
       try {
         const response = await getBookmarkedPosts(axiosPrivate, { signal: controller.signal });
         if (!isMounted) return;
-
-        // --- CRITICAL DEFENSIVE ADAPTATION STEP ---
         const adaptedPosts = response.data.data.map(post => {
-            // Check if author data exists under post.userId
             const authorData = post.userId; 
             
             return {
                 ...post,
-                // FIX: Use optional chaining (?.) for all author properties
-                // and assign the populated data to the 'author' field expected by PostCard.
                 author: { 
                     _id: authorData?._id || 'N/A',
                     name: authorData?.name || 'Unknown User', 
                     department: authorData?.department || 'N/A',
                     fallback: getInitials(authorData?.name),
                 },
-                // The API sends the interaction flags directly on the post object
                 reactionCount: post.reactionCount || 0,
                 commentCount: post.commentCount || 0,
                 isLiked: post.isLiked || false,
-                isBookmarked: true, // We know this is true
+                isBookmarked: true,
             };
         });
         
@@ -66,8 +60,7 @@ export const BookmarkPage = () => {
     };
 
     fetchBookmarks();
-    
-    // Cleanup
+
     return () => {
       isMounted = false;
       controller.abort();
