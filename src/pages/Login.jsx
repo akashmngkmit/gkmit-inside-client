@@ -75,7 +75,8 @@ export const Login = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            disabled={isLoading} 
+            disabled={isLoading}
+            isPassword
           />
           </div>
 

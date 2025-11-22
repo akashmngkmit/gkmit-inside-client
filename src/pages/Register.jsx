@@ -169,7 +169,7 @@ export const Register = () => {
           <FloatingInput
             id="password"
             label="Password"
-            type="password"
+            isPassword
             autoComplete="new-password"
             required
             value={formData.password}
@@ -179,7 +179,6 @@ export const Register = () => {
           <FloatingInput
             id="confirmPassword"
             label="Confirm Password"
-            type="password"
             autoComplete="new-password"
             required
             value={formData.confirmPassword}

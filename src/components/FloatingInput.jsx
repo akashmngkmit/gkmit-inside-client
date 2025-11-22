@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Eye, EyeOff } from 'lucide-react';
 
 /**
  * A reusable input component that implements the Floating Label pattern.
  * The label sits inside the input field and floats to the top when focused or filled.
  */
-export const FloatingInput = ({ id, label, type = 'text', value, onChange, disabled, required, className = '', ...props }) => {
-  // Check if the input has content (to keep the label floated)
+export const FloatingInput = ({ id, label, type = 'text', value, onChange, disabled, required, className = '', isPassword = false, ...props }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const isFilled = value && value.toString().length > 0;
-  // Track focus state
   const [isFocused, setIsFocused] = useState(false);
-
-  // Determine the floating state
   const isFloating = isFilled || isFocused;
+
+  const inputType = isPassword && showPassword ? 'text' : isPassword ? 'password' : type;
 
   // Renders the input and label in a relative container
   return (
@@ -42,7 +42,7 @@ export const FloatingInput = ({ id, label, type = 'text', value, onChange, disab
       {/* Input Component (must have specific padding to allow label space) */}
       <Input
         id={id}
-        type={type}
+        type={inputType} 
         name={id}
         value={value}
         onChange={onChange}
@@ -51,9 +51,18 @@ export const FloatingInput = ({ id, label, type = 'text', value, onChange, disab
         disabled={disabled}
         required={required}
         // Ensure the input has enough vertical padding (py-3) to fit the resting label
-        className="pt-6 pb-2 placeholder-transparent focus:placeholder-gray-500"
+        className="pt-6 pb-2 placeholder-transparent focus:placeholder-gray-500 pr-10" // Added pr-10 for icon space
         {...props}
       />
+
+      {isPassword && (
+        <span 
+          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 z-20"
+          onClick={() => setShowPassword(prev => !prev)}
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </span>
+      )}
     </div>
   );
 };

@@ -119,7 +119,7 @@ export const AdminDashboardPage = () => {
       )}
       
       {/* Placeholder for future charts */}
-      <Card className="mt-6">
+      {/* <Card className="mt-6">
         <CardHeader>
           <CardTitle>Activity Chart (Placeholder)</CardTitle>
         </CardHeader>
@@ -128,7 +128,7 @@ export const AdminDashboardPage = () => {
             <p className="text-gray-500">Charts will be implemented here.</p>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
