@@ -9,8 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Send, XIcon, Image as ImageImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAxiosPrivate } from '@/config/useAxiosPrivate';
-import { createPost } from '@/api/PostApi';
+
+import {useAxiosPrivate} from '@/config/useAxiosPrivate.js';
+import { createPost } from '@/api/PostApi.js'; 
+import { FloatingInput } from './FloatingInput';
 
 export const CreatePost = () => {
   const { user } = useAuth();
@@ -134,16 +136,14 @@ export const CreatePost = () => {
 
             <div className="flex-1 space-y-3">
               <div className="space-y-1">
-                <Label htmlFor="title" className="sr-only">Post Title</Label>
-                <Input
+                <FloatingInput
                   id="title"
-                  name="title"
-                  placeholder="Post Title (Required)"
+                  label="Post Title"
+                  type="text"
                   value={formData.title}
                   onChange={handleChange}
                   required
                   maxLength={TITLE_MAX}
-                  className="font-semibold text-lg"
                   disabled={isLoading}
                 />
                 <p className="text-xs text-right text-gray-500">
@@ -152,15 +152,13 @@ export const CreatePost = () => {
               </div>
               
               <div className="space-y-1">
-                <Label htmlFor="subtitle" className="sr-only">Subtitle</Label>
-                <Textarea
+                <FloatingInput
                   id="subtitle"
-                  name="subtitle"
-                  placeholder="Subtitle (Optional)"
+                  label="Subtitle (Optional)"
+                  type="text"
                   value={formData.subtitle}
                   onChange={handleChange}
                   maxLength={SUBTITLE_MAX}
-                  className="min-h-[80px]"
                   disabled={isLoading}
                 />
                 <p className="text-xs text-right text-gray-500">
@@ -172,7 +170,7 @@ export const CreatePost = () => {
               <Textarea
                 id="description"
                 name="description"
-                placeholder={`What's on your mind, ${user?.name}? (Required)`}
+                placeholder={`What's on your mind, ${user?.name}?`}
                 value={formData.description}
                 onChange={handleChange}
                 required
