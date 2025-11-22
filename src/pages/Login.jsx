@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FloatingInput } from '@/components/FloatingInput';
+import { ArrowLeft } from 'lucide-react';
 
 import { useAuth } from '../store/AuthContext.jsx'; 
 
@@ -17,6 +18,11 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth(); 
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/');
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +48,16 @@ export const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 p-4">
+      <div className="absolute top-4 left-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleGoBack}
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-6 sm:p-8 space-y-6 bg-white rounded-lg shadow-xl"
