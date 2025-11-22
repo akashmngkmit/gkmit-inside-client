@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PostCard } from '@/components/PostCard.jsx';
-import { useAxiosPrivate } from '@/config/useAxiosPrivate';
+import {useAxiosPrivate} from '@/config/useAxiosPrivate.js';
 import { getBookmarkedPosts } from '@/api/PostApi';
 import { Bookmark } from 'lucide-react';
 
@@ -11,6 +11,13 @@ export const BookmarkPage = () => {
   const [error, setError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
 
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    const parts = name.split(' ');
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -19,15 +26,38 @@ export const BookmarkPage = () => {
 
     const fetchBookmarks = async () => {
       try {
-        const response = await getBookmarkedPosts(axiosPrivate);
-        if (isMounted) {
-          setBookmarkedPosts(response.data.data);
-        }
+        const response = await getBookmarkedPosts(axiosPrivate, { signal: controller.signal });
+        if (!isMounted) return;
+
+        // --- CRITICAL DEFENSIVE ADAPTATION STEP ---
+        const adaptedPosts = response.data.data.map(post => {
+            // Check if author data exists under post.userId
+            const authorData = post.userId; 
+            
+            return {
+                ...post,
+                // FIX: Use optional chaining (?.) for all author properties
+                // and assign the populated data to the 'author' field expected by PostCard.
+                author: { 
+                    _id: authorData?._id || 'N/A',
+                    name: authorData?.name || 'Unknown User', 
+                    department: authorData?.department || 'N/A',
+                    fallback: getInitials(authorData?.name),
+                },
+                // The API sends the interaction flags directly on the post object
+                reactionCount: post.reactionCount || 0,
+                commentCount: post.commentCount || 0,
+                isLiked: post.isLiked || false,
+                isBookmarked: true, // We know this is true
+            };
+        });
+        
+        setBookmarkedPosts(adaptedPosts);
+
       } catch (err) {
-        if (isMounted) {
-          console.error("Failed to fetch bookmarks:", err);
-          setError(err.message || 'Failed to load bookmarks.');
-        }
+        if (!isMounted && err.name !== 'CanceledError') return;
+        console.error("Failed to fetch bookmarks:", err);
+        setError(err.message || 'Failed to load bookmarks.');
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -47,6 +77,7 @@ export const BookmarkPage = () => {
   return (
     <div className="flex flex-col gap-6">
       
+      {/* 1. Page Header */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl">
@@ -61,6 +92,7 @@ export const BookmarkPage = () => {
         </CardContent>
       </Card>
 
+      {/* 2. The list of bookmarked posts */}
       {isLoading ? (
         <div className="w-full text-center p-10">
           <p>Loading bookmarks...</p>
@@ -76,18 +108,7 @@ export const BookmarkPage = () => {
           {bookmarkedPosts.map((post) => (
             <PostCard 
               key={post._id} 
-              post={{
-                ...post,
-                author: { 
-                  name: post.userId.name, 
-                  department: post.userId.department,
-                  fallback: post.userId.name.split(' ').map(n => n[0]).join('')
-                },
-                reactionCount: post.reactionCount || 0,
-                commentCount: post.commentCount || 0,
-                isLiked: post.isLiked || false,
-                isBookmarked: true,
-              }} 
+              post={post} // Pass the adapted post
             />
           ))}
         </div>

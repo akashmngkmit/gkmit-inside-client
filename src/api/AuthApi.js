@@ -46,7 +46,7 @@ export const refreshAccessToken = async () => {
   try {
     // We send an empty POST request, as per your docs
     const response = await api.post('/auth/refresh', {});
-    return response.data; // e.g., { success: true, data: { accessToken: "..." } }
+    return response.data; 
   } catch (error) {
     if (error.response && error.response.data) {
       throw new Error(error.response.data.message || 'Session expired.');

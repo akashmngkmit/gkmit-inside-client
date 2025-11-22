@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from "sonner"; // 1. Import the toaster
-import { registerUser } from '@/api/AuthApi';
-
-// Import shadcn components
+import { toast } from "sonner"; 
+import { registerUser } from '../api/AuthApi.js'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,19 +21,28 @@ export const Register = () => {
     confirmPassword: '',
     department: '',
   });
-  
-  const [error, setError] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === 'email') {
+      if (value.includes(' ') || (/[A-Z]/).test(value)) {
+        toast.warning("Email must be entirely lowercase and contain no spaces.", { duration: 1500 });
+        value = value.toLowerCase().replace(/\s/g, '');
+      }
+    } else if (name === 'name') {
+      value = value.trimStart();
+    }
+    
     setFormData(prevData => ({
       ...prevData,
       [name]: value
     }));
   };
-
+  
   const handleDepartmentChange = (value) => {
     setFormData(prevData => ({
       ...prevData,
@@ -45,32 +52,36 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
       return;
     }
-    if (formData.password.length < 6) { 
-      setError('Password must be at least 6 characters long.');
+    if (formData.password.length < 8) {
+      toast.error('Password must be at least 8 characters long.');
       return;
+    }
+    if (!formData.department) {
+      toast.error('Please select a department.');
+      return;
+    }
+    if (formData.email !== formData.email.toLowerCase() || formData.email.includes(' ')) {
+        toast.error('Please ensure your email contains only lowercase letters and no spaces.');
+        return;
     }
     
     setIsLoading(true);
-
     const { confirmPassword, ...apiData } = formData;
 
     try {
       const response = await registerUser(apiData);
       toast.success(response.message || 'Registration successful!');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      navigate('/login');
 
-    } catch (err) {
-      console.error("Registration failed:", err);
-      toast.error(err.message || 'An error occurred.');
-      setIsLoading(false); 
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error(error.message || 'An unknown error occurred.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,10 +108,10 @@ export const Register = () => {
               name="name"
               type="text"
               required
-              disabled={isLoading} 
               value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
@@ -111,35 +122,31 @@ export const Register = () => {
               type="email"
               autoComplete="email"
               required
-              disabled={isLoading}
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@company.com"
+              placeholder="you@company.com (lowercase only)"
+              disabled={isLoading}
             />
           </div>
-          
-          {/* Department Select */}
           <div className="space-y-2">
             <Label htmlFor="department">Department</Label>
-            <Select 
-              required 
-              disabled={isLoading}
+            <Select
               value={formData.department}
               onValueChange={handleDepartmentChange}
+              required
+              disabled={isLoading}
             >
               <SelectTrigger id="department">
                 <SelectValue placeholder="Select department" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="HR">HR</SelectItem>
-                <SelectItem value="Recruitment">Recruitment</SelectItem>
-                <SelectItem value="Developer">Developer</SelectItem>
-                <SelectItem value="Engineering">Engineering</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
+                <SelectItem value="hr">HR</SelectItem>
+                <SelectItem value="recruitment">Recruitment</SelectItem>
+                <SelectItem value="developer">Developer</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -148,10 +155,10 @@ export const Register = () => {
               type="password"
               autoComplete="new-password"
               required
-              disabled={isLoading}
               value={formData.password}
               onChange={handleChange}
-              placeholder="Minimum 6 characters"
+              placeholder="Minimum 8 characters"
+              disabled={isLoading}
             />
           </div>
           <div className="space-y-2">
@@ -162,22 +169,20 @@ export const Register = () => {
               type="password"
               autoComplete="new-password"
               required
-              disabled={isLoading}
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
-          {error && (
-            <div className="text-center text-sm text-red-600">{error}</div>
-          )}
+          
           <div className="text-center text-xs text-gray-500 p-2 bg-gray-50 rounded-md">
-            Note: All new accounts are subject to administrator approval. You
-            will be able to log in once your account has been approved.
+            Note: All new accounts are subject to administrator approval.
           </div>
+
           <div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Registering..." : "Register"}
+              {isLoading ? 'Registering...' : 'Register'}
             </Button>
           </div>
         </div>

@@ -4,8 +4,15 @@ import { useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostCard } from '../components/PostCard.jsx';
 import { ProfileHeader } from '../components/ProfileHeader.jsx'; 
-import { useAxiosPrivate } from '@/config/useAxiosPrivate.js';
+import {useAxiosPrivate} from '../config/useAxiosPrivate.js';
 import { getPostsByUserId } from '@/api/PostApi.js';
+
+const getInitials = (name) => {
+    if (!name) return 'U';
+    const parts = name.split(' ');
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 
 export const ProfilePage = () => {
   const { userId } = useParams(); 
@@ -22,18 +29,42 @@ export const ProfilePage = () => {
     setIsLoading(true);
     setError(null);
     setProfile(null);
-    setAllPosts([]); 
+    setAllPosts([]);
 
     const fetchProfileData = async () => {
       try {
-        const response = await getPostsByUserId(userId, axiosPrivate);
+        const response = await getPostsByUserId(userId, axiosPrivate, {
+          signal: controller.signal
+        });
         if (!isMounted) return;
 
-        const userPosts = response.data.data;
-        setAllPosts(userPosts); 
+        const rawPosts = response.data.data;
 
-        if (userPosts.length > 0) {
-          setProfile(userPosts[0].author); 
+         const adaptedPosts = rawPosts.map(post => {
+            return {
+                ...post,
+                reactionCount: post.reactionCount || 0,
+                commentCount: post.commentCount || 0,
+                isLiked: post.isLiked || false,
+                isBookmarked: post.isBookmarked || false,
+            };
+        });
+        
+        setAllPosts(adaptedPosts); 
+
+        if (adaptedPosts.length > 0) {
+          const authorData = adaptedPosts[0].author; 
+          if (authorData && authorData._id) { 
+            setProfile({
+              _id: authorData._id, 
+              name: authorData.name || 'Unknown User', 
+              department: authorData.department || 'N/A', 
+              email: authorData.email || 'N/A',
+              fallback: getInitials(authorData.name), 
+              bio: "Developer at GKMIT.", 
+              joined: new Date(), 
+            });
+          }
         } else {
           setProfile(null); 
         }
@@ -57,6 +88,10 @@ export const ProfilePage = () => {
     };
   }, [userId, axiosPrivate]); 
 
+  const approvedPosts = allPosts.filter(post => post.postStatus === 'approved');
+  const pendingPosts = allPosts.filter(post => post.postStatus === 'pending');
+  const rejectedPosts = allPosts.filter(post => post.postStatus === 'rejected');
+
   if (isLoading) {
     return (
       <div className="w-full text-center p-10">
@@ -75,18 +110,48 @@ export const ProfilePage = () => {
     );
   }
 
-  const approvedPosts = allPosts.filter(post => post.postStatus === 'approved');
-  const pendingPosts = allPosts.filter(post => post.postStatus === 'pending');
-  const rejectedPosts = allPosts.filter(post => post.postStatus === 'rejected');
+  const renderProfileHeader = () => {
+    if (!profile && allPosts.length === 0) {
+        return <h2 className="text-2xl font-bold">User has no posts yet.</h2>;
+    }
+  
+    if (profile) {
+        return (
+            <>
+              <ProfileHeader user={profile} />
+              <h2 className="text-2xl font-bold">Posts by {profile.name}</h2>
+            </>
+        );
+    }
+
+    return null;
+  };
+
+  const renderPostContent = (postsList, status) => {
+    if (postsList.length === 0) {
+      return (
+        <Card>
+          <CardContent className="p-6 text-center text-gray-500">
+            <p>This user has no {status} posts yet.</p>
+          </CardContent>
+        </Card>
+      );
+    }
+    
+    return (
+      <div className="flex flex-col gap-6 mt-4">
+        {postsList.map((post) => (
+          <PostCard key={post._id} post={post} />
+        ))}
+      </div>
+    );
+  };
+
 
   return (
     <div className="flex flex-col gap-6">
       
-      {profile ? (
-        <ProfileHeader user={profile} />
-      ) : (
-        <h2 className="text-2xl font-bold">User Profile</h2>
-      )}
+      {renderProfileHeader()}
 
       <Tabs defaultValue="approved" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
@@ -96,51 +161,15 @@ export const ProfilePage = () => {
         </TabsList>
         
         <TabsContent value="approved">
-          {approvedPosts.length > 0 ? (
-            <div className="flex flex-col gap-6 mt-4">
-              {approvedPosts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center text-gray-500">
-                <p>This user has no approved posts yet.</p>
-              </CardContent>
-            </Card>
-          )}
+          {renderPostContent(approvedPosts, 'approved')}
         </TabsContent>
         
         <TabsContent value="pending">
-          {pendingPosts.length > 0 ? (
-            <div className="flex flex-col gap-6 mt-4">
-              {pendingPosts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center text-gray-500">
-                <p>This user has no pending posts.</p>
-              </CardContent>
-            </Card>
-          )}
+          {renderPostContent(pendingPosts, 'pending')}
         </TabsContent>
         
         <TabsContent value="rejected">
-          {rejectedPosts.length > 0 ? (
-            <div className="flex flex-col gap-6 mt-4">
-              {rejectedPosts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center text-gray-500">
-                <p>This user has no rejected posts.</p>
-              </CardContent>
-            </Card>
-          )}
+          {renderPostContent(rejectedPosts, 'rejected')}
         </TabsContent>
       </Tabs>
       

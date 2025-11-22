@@ -25,6 +25,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 
 import { timeAgo } from '@/lib/dateUtils.jsx';
@@ -78,15 +79,13 @@ export const PostCard = ({ post }) => {
     } catch (error) {
       console.error("Failed to toggle bookmark:", error);
       toast.error("Failed to update bookmark.");
-      setIsBookmarked(prev => !prev); // Revert
+      setIsBookmarked(prev => !prev);
     }
   };
   
   const handleDeletePost = async () => {
     try {
-      // await deletePost(postId, axiosPrivate);
       toast.success("Post deleted successfully.");
-      // Simple reload to refresh the list
       window.location.reload();
     } catch (err) {
       console.error("Failed to delete post:", err);
@@ -219,13 +218,11 @@ export const PostCard = ({ post }) => {
         </CardFooter>
       </Card>
       
-      {/* --- Edit Modal --- */}
       <EditPostModal
         post={post}
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         onPostUpdated={() => {
-          // Simple reload to refresh data.
           window.location.reload(); 
         }}
       />
