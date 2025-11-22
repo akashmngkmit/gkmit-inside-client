@@ -166,7 +166,6 @@ export const CreatePost = () => {
                 </p>
               </div>
 
-              <Label htmlFor="description" className="sr-only">Description * </Label>
               <Textarea
                 id="description"
                 name="description"
@@ -179,7 +178,6 @@ export const CreatePost = () => {
               />
               
               <div className="space-y-2">
-                <Label htmlFor="tags-input">Tags (Type and press Enter)</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map((tag) => (
                     <Badge key={tag} variant="secondary" className="flex items-center gap-1">
@@ -193,7 +191,7 @@ export const CreatePost = () => {
                 </div>
                 <Input
                   id="tags-input"
-                  placeholder="e.g., react, devops, frontend..."
+                  placeholder="Tags (Type and press Enter)"
                   value={currentTag}
                   onChange={handleTagChange}
                   onKeyDown={handleTagKeyDown}
@@ -202,14 +200,13 @@ export const CreatePost = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="file-upload">Attach Image *</Label>
                 <Input
                   id="file-upload"
                   type="file"
                   name="image" 
                   required
                   onChange={handleFileChange}
-                  className="file:text-sm file:font-medium"
+                  className="file:text-sm file:font-medium text-black/50"
                   accept="image/png, image/jpeg, image/gif"
                   disabled={isLoading}
                 />
