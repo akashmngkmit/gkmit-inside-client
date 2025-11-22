@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from "sonner"; 
 import { registerUser } from '../api/AuthApi.js'; 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingInput } from '@/components/FloatingInput.jsx';
 import {
   Select,
   SelectContent,
@@ -12,6 +11,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+const isValidEmailFormat = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const hasNumericOrInvalidDomain = (email) => {
+    const match = email.match(/@([^.]+)\./);
+    
+    if (match && match[1]) {
+        const domainPrefix = match[1];
+        return /[^a-z-]/.test(domainPrefix);
+    }
+    return false; 
+};
 
 export const Register = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +43,7 @@ export const Register = () => {
 
     if (name === 'email') {
       if (value.includes(' ') || (/[A-Z]/).test(value)) {
-        toast.warning("Email must be entirely lowercase and contain no spaces.", { duration: 1500 });
+        toast.warning("Invalid", { duration: 1500 });
         value = value.toLowerCase().replace(/\s/g, '');
       }
     } else if (name === 'name') {
@@ -52,6 +65,7 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match.');
       return;
@@ -64,8 +78,19 @@ export const Register = () => {
       toast.error('Please select a department.');
       return;
     }
+    
     if (formData.email !== formData.email.toLowerCase() || formData.email.includes(' ')) {
-        toast.error('Please ensure your email contains only lowercase letters and no spaces.');
+        toast.error('Invalid Email');
+        return;
+    }
+    
+    if (!isValidEmailFormat(formData.email)) {
+        toast.error('Invalid Email');
+        return;
+    }
+    
+    if (hasNumericOrInvalidDomain(formData.email)) {
+        toast.error('Invalid Email');
         return;
     }
     
@@ -101,35 +126,29 @@ export const Register = () => {
         </div>
 
         <div className="space-y-4">
+          <FloatingInput
+            id="name"
+            label="Full Name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          <FloatingInput
+            id="email"
+            label="Email Address"
+            type="email"
+            autoComplete="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="John Doe"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@company.com (lowercase only)"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="department">Department</Label>
+            <label htmlFor="department" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Department *
+            </label>
             <Select
               value={formData.department}
               onValueChange={handleDepartmentChange}
@@ -147,34 +166,26 @@ export const Register = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Minimum 8 characters"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm Password</Label>
-            <Input
-              id="confirm-password"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              disabled={isLoading}
-            />
-          </div>
+          <FloatingInput
+            id="password"
+            label="Password"
+            type="password"
+            autoComplete="new-password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          <FloatingInput
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            autoComplete="new-password"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
           
           <div className="text-center text-xs text-gray-500 p-2 bg-gray-50 rounded-md">
             Note: All new accounts are subject to administrator approval.

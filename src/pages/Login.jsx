@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { FloatingInput } from '@/components/FloatingInput';
 
 import { useAuth } from '../store/AuthContext.jsx'; 
 
@@ -57,32 +57,26 @@ export const Login = () => {
         
         <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange} 
-              placeholder="you@company.com"
-              disabled={isLoading} 
-            />
+          <FloatingInput
+            id="email"
+            type="email"
+            label="Email Address"
+            value={formData.email}
+            onChange={handleChange} 
+            required
+            disabled={isLoading} 
+          />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password" 
-              type="password"
-              autoComplete="current-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              disabled={isLoading}
-            />
+          <FloatingInput
+            id="password"
+            type="password"
+            label="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            disabled={isLoading} 
+          />
           </div>
 
           <div>
