@@ -100,7 +100,7 @@ export const Register = () => {
     }
     
     setIsLoading(true);
-    const { confirmPassword, ...apiData } = formData;
+    const { confirmPassword: _confirmPassword, ...apiData } = formData;
 
     try {
       const response = await registerUser(apiData);

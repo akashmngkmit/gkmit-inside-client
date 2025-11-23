@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { registerUser, loginUser } from '@/api/AuthApi.jsx';
+import { registerUser, loginUser } from '@/api/AuthApi.js';
 import { api } from '@/config/axios';
 
 vi.mock('../config/axios.js', () => ({
@@ -10,7 +10,7 @@ vi.mock('../config/axios.js', () => ({
 
 describe('Auth API Functions', () => {
   beforeEach(() => {
-    vi.clearAllMocks(); 
+    vi.clearAllMocks();
   });
 
   const mockUserData = {
@@ -33,7 +33,7 @@ describe('Auth API Functions', () => {
       const result = await registerUser(mockUserData);
 
       expect(api.post).toHaveBeenCalledWith('/auth/register', mockUserData);
-      
+
       expect(result.success).toBe(true);
       expect(result.message).toContain('wait for admin approval');
     });
@@ -51,7 +51,7 @@ describe('Auth API Functions', () => {
       await expect(registerUser(mockUserData)).rejects.toThrow('User already exists with this email.');
     });
   });
-  
+
   describe('loginUser', () => {
     const mockCredentials = { email: 'user@gkm.com', password: 'password123' };
     const mockToken = "eyJh...[token]...";
@@ -70,7 +70,7 @@ describe('Auth API Functions', () => {
       });
 
       const result = await loginUser(mockCredentials);
-      
+
       expect(result.data.accessToken).toBe(mockToken);
       expect(result.data.user.role).toBe('employee');
     });
@@ -88,7 +88,7 @@ describe('Auth API Functions', () => {
 
       await expect(loginUser(mockCredentials)).rejects.toThrow('Invalid credentials');
     });
-    
+
     it('should throw "pending admin approval" error on 401 Unauthorized', async () => {
       api.post.mockRejectedValueOnce({
         response: {

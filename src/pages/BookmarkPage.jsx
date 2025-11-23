@@ -29,7 +29,7 @@ export const BookmarkPage = () => {
         const response = await getBookmarkedPosts(axiosPrivate, { signal: controller.signal });
         if (!isMounted) return;
         const adaptedPosts = response.data.data.map(post => {
-            const authorData = post.userId; 
+            const authorData = post.author; 
             
             return {
                 ...post,
@@ -45,7 +45,6 @@ export const BookmarkPage = () => {
                 isBookmarked: true,
             };
         });
-        
         setBookmarkedPosts(adaptedPosts);
 
       } catch (err) {

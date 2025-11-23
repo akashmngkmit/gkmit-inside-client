@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -40,20 +40,20 @@ export default defineConfig({
           }
         ]
       }
-    }) 
+    })
   ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-test: {
-    include: ['src/tests/**/*.test.jsx'],
+  test: {
+    include: ['src/tests/**/*.test.{js,jsx}'],
     environment: 'jsdom',
     globals: true,
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-    setupFiles: ['./src/tests/setup.js'], 
+    setupFiles: ['./src/tests/setup.js'],
   },
 });

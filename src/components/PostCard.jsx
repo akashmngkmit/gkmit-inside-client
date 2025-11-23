@@ -57,6 +57,7 @@ export const PostCard = ({ post }) => {
 
   const isAuthor = user?._id === author?._id; 
   const canEdit = isAuthor && postStatus === 'pending';
+  const isDisabled = postStatus === 'pending';
 
   const handleToggleLike = async () => {
     setIsLiked(prev => !prev);
@@ -123,7 +124,7 @@ export const PostCard = ({ post }) => {
             
             {canEdit && (
               <AlertDialog>
-                <DropdownMenu>
+                {/* <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
                       <MoreHorizontal className="h-5 w-5" />
@@ -143,7 +144,7 @@ export const PostCard = ({ post }) => {
                     </AlertDialogTrigger>
                     
                   </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
                 
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -194,12 +195,13 @@ export const PostCard = ({ post }) => {
               className="flex items-center gap-2 data-[active=true]:text-blue-600"
               data-active={isLiked}
               onClick={handleToggleLike} 
+              disabled={isDisabled}
             >
               <ThumbsUp className={`w-5 h-5 ${isLiked ? 'fill-blue-600 text-blue-600' : ''}`} /> 
               Like
             </Button>
             
-            <Button variant="ghost" className="flex items-center gap-2" asChild>
+            <Button variant="ghost" className="flex items-center gap-2" asChild disabled={isDisabled}>
               <Link to={`/post/${postId}`}>
                 <MessageSquare className="w-5 h-5" /> Comment
               </Link>
@@ -210,6 +212,7 @@ export const PostCard = ({ post }) => {
               className="flex items-center gap-2 data-[active=true]:text-yellow-600"
               data-active={isBookmarked}
               onClick={handleToggleBookmark} 
+              disabled={isDisabled}
             >
               <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-yellow-600 text-yellow-600' : ''}`} /> 
               Bookmark
