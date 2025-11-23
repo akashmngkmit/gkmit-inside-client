@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +34,7 @@ import { EditPostModal } from './EditPostModal.jsx';
 
 export const PostCard = ({ post }) => {
   const { user } = useAuth(); 
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [likeCount, setLikeCount] = useState(post.reactionCount || 0);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
@@ -57,7 +58,7 @@ export const PostCard = ({ post }) => {
 
   const isAuthor = user?._id === author?._id; 
   const canEdit = isAuthor && postStatus === 'pending';
-  const isDisabled = postStatus === 'pending';
+  const isDisabled = postStatus !== 'approved';
 
   const handleToggleLike = async () => {
     setIsLiked(prev => !prev);
@@ -67,8 +68,8 @@ export const PostCard = ({ post }) => {
     } catch (error) {
       console.error("Failed to toggle like:", error);
       toast.error("Failed to update like status.");
-      setIsLiked(prev => !prev); // Revert
-      setLikeCount(prev => (isLiked ? prev + 1 : prev - 1)); // Revert
+      setIsLiked(prev => !prev); 
+      setLikeCount(prev => (isLiked ? prev + 1 : prev - 1)); 
     }
   };
   
@@ -93,6 +94,10 @@ export const PostCard = ({ post }) => {
       toast.error(err.response?.data?.message || "Failed to delete post.");
     }
   };
+
+  const handleClick = () => {
+    navigate(`/post/${postId}`)
+  }
 
   return (
     <>
@@ -124,28 +129,6 @@ export const PostCard = ({ post }) => {
             
             {canEdit && (
               <AlertDialog>
-                {/* <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
-                      <Edit className="mr-2 h-4 w-4" />
-                      <span>Edit</span>
-                    </DropdownMenuItem>
-                    
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem className="text-red-600">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    
-                  </DropdownMenuContent>
-                </DropdownMenu> */}
-                
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -183,7 +166,7 @@ export const PostCard = ({ post }) => {
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col items-start gap-4 pt-4 border-t">
+        {user.role!=='admin' && <CardFooter className="flex flex-col items-start gap-4 pt-4 border-t">
           <div className="flex items-center gap-4 text-sm text-gray-600">
             <span>{likeCount} Likes</span>
             <span>{commentCount || 0} Comments</span>
@@ -201,10 +184,8 @@ export const PostCard = ({ post }) => {
               Like
             </Button>
             
-            <Button variant="ghost" className="flex items-center gap-2" asChild disabled={isDisabled}>
-              <Link to={`/post/${postId}`}>
+            <Button onClick={handleClick} variant="ghost" className="flex items-center gap-2" disabled={isDisabled}>
                 <MessageSquare className="w-5 h-5" /> Comment
-              </Link>
             </Button>
             
             <Button 
@@ -218,7 +199,7 @@ export const PostCard = ({ post }) => {
               Bookmark
             </Button>
           </div>
-        </CardFooter>
+        </CardFooter>}
       </Card>
       
       <EditPostModal
