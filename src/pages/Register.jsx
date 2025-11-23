@@ -193,6 +193,7 @@ export const Register = () => {
           />
           <FloatingInput
             id="confirmPassword"
+            type="password"
             label="Confirm Password"
             autoComplete="new-password"
             required
